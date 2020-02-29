@@ -254,7 +254,11 @@ func genFieldTextAppearance(wa *model.PdfAnnotationWidget, ftxt *model.PdfFieldT
 		}
 		font = helv
 		resources.SetFontByName(*fontname, helv.ToPdfObject())
+	} else if model.FontInCache(string(*fontname)) {
+		font, _ = model.GetCacheFont(string(*fontname))
+		resources.SetFontByName(*fontname, font.ToPdfObject())
 	} else {
+		common.Log.Info("not cache font font: %v", fontname)
 		fontobj, has := dr.GetFontByName(*fontname)
 		if !has {
 			return nil, errors.New("font not in DR")
